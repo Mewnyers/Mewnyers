@@ -15,10 +15,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.CAT_TOKEN }}
           USERNAME: ${{ github.repository_owner }}
+      - name: Update README with JST timestamp
+        run: |
+          CURRENT_DATE=$(TZ='Asia/Tokyo' date +'%Y/%m/%d %H:%M')
+          sed -i "s|Last Update: .*|Last Update: $CURRENT_DATE (JST)|" README.md
+
       - name: Commit & Push
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add -A .
-          git commit -m "generated" || echo "No changes to commit"
+          git commit -m "generated and updated timestamp" || echo "No changes to commit"
           git push
